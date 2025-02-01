@@ -1,6 +1,7 @@
 {
-  "name": "fetch-cache-bug",
+  "name": "next-fetch-cache-bug",
   "version": "0.1.0",
+  "author": "Konrad Guzek",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

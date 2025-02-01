@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,32 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <header className="w-full py-2 bg-gray-800 text-white mb-20">
+          <div className="lg:px-[25%] mb-2">
+            <Link href="/">
+              <h1 className="text-3xl">Next.js Fetch Cache Bug</h1>
+            </Link>
+            <h2 className="text-xl">
+              This is a demonstration of a bug in Next.js where the fetch cache
+              is returning corrupted data, with elements of the surrounding
+              page.
+            </h2>
+          </div>
+          <hr />
+        </header>
+        <div className="lg:w-1/2 lg:mx-[25%]">{children}</div>
+        <footer className="absolute bottom-0 w-full py-2 bg-gray-800 text-white">
+          <hr />
+          <p className="text-center mt-2">
+            This is a simple footer (c){" "}
+            <Link
+              href="https://www.guzek.uk"
+              className="hover:underline text-blue-100"
+            >
+              Konrad Guzek
+            </Link>
+          </p>
+        </footer>
       </body>
     </html>
   );

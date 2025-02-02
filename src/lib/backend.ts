@@ -52,7 +52,7 @@ async function fetchFromEpisodate<T>(
   try {
     parsed = JSON.parse(data);
   } catch (error) {
-    console.error("Failed to parse:", error);
+    console.error("Failed to parse:", error, "response body:", data);
     return fallback;
   }
   return parsed;

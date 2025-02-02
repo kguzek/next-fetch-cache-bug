@@ -7,17 +7,28 @@ export interface TvShow {
   permalink: string;
 }
 
+const PLACEHOLDER_SHOW: TvShow = {
+  name: "Show not found",
+  id: 0,
+  description: "No description available",
+  permalink: "random-show",
+};
+
 export const invalidIds = new Set();
 
-export async function getMostPopularShows(page: number) {
-  const res = await fetchFromEpisodate(`most-popular?page=${page}`);
-  const data = await res.json();
+export async function getMostPopularShows(page: number): Promise<TvShow[]> {
+  const data = await fetchFromEpisodate(`most-popular?page=${page}`, {
+    tv_shows: [PLACEHOLDER_SHOW],
+  });
   return data.tv_shows as TvShow[];
 }
 
-export async function getShowDetails(showId: string | number) {
-  const res = await fetchFromEpisodate(`show-details?q=${showId}`);
-  const data = await res.json();
+export async function getShowDetails(
+  showId: string | number
+): Promise<TvShow | []> {
+  const data = await fetchFromEpisodate(`show-details?q=${showId}`, {
+    tvShow: PLACEHOLDER_SHOW,
+  });
   const tvShow = data.tvShow as TvShow | [];
   if (Array.isArray(tvShow)) {
     invalidIds.add(showId);
@@ -25,12 +36,24 @@ export async function getShowDetails(showId: string | number) {
   return tvShow;
 }
 
-function fetchFromEpisodate(endpoint: string) {
+async function fetchFromEpisodate<T>(
+  endpoint: string,
+  fallback: T
+): Promise<T> {
   const requestInit: RequestInit = {
     headers: {
       Accept: "application/json",
     },
     next: { revalidate: 5 },
   };
-  return fetch(`${API_BASE}/${endpoint}`, requestInit);
+  const res = await fetch(`${API_BASE}/${endpoint}`, requestInit);
+  const data = await res.text();
+  let parsed;
+  try {
+    parsed = JSON.parse(data);
+  } catch (error) {
+    console.error("Failed to parse:", error);
+    return fallback;
+  }
+  return parsed;
 }
